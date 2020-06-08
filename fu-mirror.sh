@@ -152,8 +152,6 @@ while read ID FHASH FDECHASH; do
 	# Extract the bits
 	# Use a 4-way parallel extract for large archives to optimize
 	# throughput on slow filesystems.
-	echo -n "Extract start: "
-	date
 	if [ `stat -f '%z' "${PRIVDIR}/dec-${ID}"` -gt 10000000 ]; then
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}" --include './*/*/*/[0123]*' &
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}" --include './*/*/*/[4567]*' &
@@ -161,11 +159,8 @@ while read ID FHASH FDECHASH; do
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}" --exclude './*/*/*/[0123456789ab]*' &
 		wait
 	else
-		echo "Small archive; using single tar process"
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}"
 	fi
-	echo -n "Extract done: "
-	date
 
 	# Delete files which we no longer need
 	rm "${PRIVDIR}/dec-${ID}" "${PRIVDIR}/tar-${ID}" "${PRIVDIR}/key-${ID}"

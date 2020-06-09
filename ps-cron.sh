@@ -7,7 +7,7 @@ sh -e /root/efs-fup/ps-mirror.sh portsnap-master.freebsd.org /local0/ps-mirror/w
 ETIME=`date "+%s"`
 TTIME=`expr $ETIME - $STIME || true`
 if [ $TTIME -lt 60 ]; then
-	touch /local0/ps-mirror/www/initialized
+	touch /local0/ps-mirror/initialized
 else
 	echo "Portsnap sync took $TTIME seconds"
 fi

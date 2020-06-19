@@ -25,7 +25,6 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# Branched from:
 # $FreeBSD: user/cperciva/portsnap-mirror/pmirror.sh 257073 2013-10-24 21:43:18Z cperciva $
 
 # READ THIS BEFORE USING THIS CODE
@@ -67,8 +66,7 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-HOMEDIR=`pwd`
-WRKDIR=`mktemp -d ${HOMEDIR}/pmirror.XXXXXX` || exit 1
+WRKDIR=`mktemp -d -t pmirror` || exit 1
 chown :`id -ng` ${WRKDIR}
 cd ${WRKDIR}
 
@@ -93,7 +91,7 @@ ${PHTTPGET} pub.ssl snapshot.ssl latest.ssl 2>&1 |
 [ -f pub.ssl -a -f snapshot.ssl -a -f latest.ssl ]
 
 if cmp -s latest.ssl ${PUBDIR}/latest.ssl; then
-	cd $HOMEDIR
+	cd /tmp/
 	rm -r ${WRKDIR}
 	exit 0
 fi
@@ -339,5 +337,5 @@ rm t.present t.wanted
 rm tp.present tp.wanted tp.needed
 
 # Remove temporary directory
-cd $HOMEDIR
+cd /tmp/
 rmdir ${WRKDIR}

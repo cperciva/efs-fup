@@ -149,17 +149,19 @@ while read ID FHASH FDECHASH; do
 		exit 1
 	fi
 
-	# Extract the bits
-	# Use a 4-way parallel extract for large archives to optimize
-	# throughput on slow filesystems.
+	# If the tar we downloaded is old, it's likely to contain bits we don't
+	# want; if it's old *and* big we might waste lots of disk bandwidth
+	# reading files we don't care about multiple times.  Generate a
+	# "filtered" archive in that case.
+	if [ `find "${PRIVDIR}/tar-${ID}" -mtime +365d | wc -l` -eq 1 ] &&
+	    [ `stat -f '%z' "${PRIVDIR}/dec-${ID}"` -gt 10000000 ]; then
+		tar -cf "${PRIVDIR}/dec-${ID}.tmp" -X "${EXCLUDES}" "@${PRIVDIR}/dec-${ID}"
+		mv "${PRIVDIR}/dec-${ID}.tmp" "${PRIVDIR}/dec-${ID}"
+	fi
+
+	# Extract the bits.  If the archive is (still) large, use a 4-way
+	# parallel extract in order to optimize throughput on slow filesystems.
 	if [ `stat -f '%z' "${PRIVDIR}/dec-${ID}"` -gt 10000000 ]; then
-		# If the tar we downloaded is old, it's likely to contain bits
-		# we don't want; generate an archive with files excluded in
-		# order to avoid reading unwanted bits 4x over.
-		if [ `find "${PRIVDIR}/tar-${ID}" -mtime +365d | wc -l` -eq 1 ]; then
-			tar -cf "${PRIVDIR}/dec-${ID}.tmp" -X "${EXCLUDES}" "@${PRIVDIR}/dec-${ID}"
-			mv "${PRIVDIR}/dec-${ID}.tmp" "${PRIVDIR}/dec-${ID}"
-		fi
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}" --include './*/*/*/[0123]*' &
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}" --include './*/*/*/[4567]*' &
 		tar -xf "${PRIVDIR}/dec-${ID}" -X "${EXCLUDES}" -C "${PUBDIR}" --include './*/*/*/[89ab]*' &

@@ -9,6 +9,6 @@ cat /var/log/nginx/access.log.0 |
 
 echo "User-Agents:"
 cat /var/log/nginx/access.log.0 |
-    cut -f 4 -d '"' |
+    cut -f 6 -d '"' |
     sort |
     uniq -c

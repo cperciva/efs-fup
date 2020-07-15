@@ -327,8 +327,16 @@ echo "`date`: Publishing file lists and signatures"
 mv bl.gz el.gz tl.gz ${PUBDIR}
 mv latest.ssl pub.ssl snapshot.ssl ${PUBDIR}
 
+echo "`date`: Updating indextimes"
+grep ^INDEX tl |
+    awk -F \| ' { print $3 "|" $2 }' |
+    sort > tl.INDEX
+join -t '|' -v 1 ${PUBDIR}/indextimes tl.INDEX |
+    sort - tl.INDEX > indextimes
+mv indextimes ${PUBDIR}
+
 echo "`date`: Removing temporary files"
-rm bl el tl
+rm bl el tl tl.INDEX
 rm tl.sorted metadata.latest
 rm bp.wanted bp.present
 rm f.wanted f.present

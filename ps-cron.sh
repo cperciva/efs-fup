@@ -11,12 +11,3 @@ if [ $TTIME -lt 60 ]; then
 else
 	echo "Portsnap sync took $TTIME seconds"
 fi
-
-# Update "indextimes"
-gunzip < /local0/ps-mirror/www/tl.gz |
-    grep ^INDEX |
-    awk -F \| ' { print $3 "|" $2 }' |
-    sort > /local0/ps-mirror/wrkdir/tl
-join -t '|' -v 1 /local0/ps-mirror/www/indextimes /local0/ps-mirror/wrkdir/tl |
-    sort - //local0/ps-mirror/wrkdir/tl > /local0/ps-mirror/wrkdir/indextimes.tmp
-mv /local0/ps-mirror/wrkdir/indextimes.tmp /local0/ps-mirror/www/indextimes

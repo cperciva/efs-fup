@@ -6,8 +6,8 @@ CSTATUS=`sysrc -n nginx_enable`
 # New status is "YES", unless...
 NSTATUS=YES
 
-# Portsnap bits are not synched or more than 2h old
-if [ `find /local0/ps-mirror/initialized -mtime -2h 2>/dev/null | wc -l` -ne 1 ]; then
+# Portsnap bits are not synched or more than 6h old
+if [ `find /local0/ps-mirror/initialized -mtime -6h 2>/dev/null | wc -l` -ne 1 ]; then
 	NSTATUS=NO
 fi
 

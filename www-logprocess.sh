@@ -55,7 +55,11 @@ cat /root/portsnap-access-tp.log |
 		fi
 		T=0
 	fi
-	T=$((T + B - A))
+	TT=$((B - A))
+	if [ $TT -gt 2419200 ]; then
+		TT=0
+	fi
+	T=$((T + TT))
 	LR="$R"
 done > /root/portsnap-usage-by-version
 cat /root/portsnap-access-tp-aws.log |
@@ -79,7 +83,11 @@ cat /root/portsnap-access-tp-aws.log |
 		fi
 		T=0
 	fi
-	T=$((T + B - A))
+	TT=$((B - A))
+	if [ $TT -gt 2419200 ]; then
+		TT=0
+	fi
+	T=$((T + TT))
 	LR="$R"
 done > /root/portsnap-usage-by-version-aws
 

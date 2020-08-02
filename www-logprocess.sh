@@ -14,6 +14,12 @@ cat /var/log/nginx/access.log.0 |
     sort |
     uniq -c
 
+echo
+echo "Number of IPv6 requests:"
+cut -f 1 -d ' ' /var/log/nginx/access.log.0 |
+    grep : |
+    wc -l
+
 # Gather portsnap statistics
 grep '"portsnap (' /var/log/nginx/access.log.0 > /root/portsnap-access.log
 cp /local0/ps-mirror/www/indextimes /root/indextimes

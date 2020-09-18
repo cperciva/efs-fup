@@ -20,6 +20,60 @@ cut -f 1 -d ' ' /var/log/nginx/access.log.0 |
     grep : |
     wc -l
 
+# Gather FreeBSD Update statistics
+grep '"freebsd-update (' /var/log/nginx/access.log.0 > /root/freebsd-update-access.log
+grep latest.ssl /root/freebsd-update-access.log > /root/freebsd-update-latest.log
+cat /root/freebsd-update-latest.log |
+    cut -f 1,7,13 -d ' ' |
+    tr '/(,' ' ' |
+    cut -f 1,3,4,7 -d ' ' > /root/freebsd-update-latest-extract.log
+perl -e '
+	open my $h, "<", "/root/efs-fup/aws-ips";
+	chomp(my @ranges = <$h>);
+	close $h;
+	while (<>) {
+		@_ = split / /;
+		$ip = $_[0];
+		if ($ip =~ /^[0-9.]+$/) {
+			@_ = split /\./, $ip;
+			$n = $_[0] * 16777216 + $_[1] * 65536 + $_[2] * 256 + $_[3];
+			for $r (@ranges) {
+				@_ = split / /, $r;
+				print if ($_[0] <= $n && $n < $_[1]);
+			}
+		}
+	}' < /root/freebsd-update-latest-extract.log > /root/freebsd-update-latest-extract-aws.log
+
+# Print FreeBSD Update statistics
+echo "Hosts running freebsd-update cron:"
+sort -u /root/freebsd-update-latest-extract.log |
+    grep -E " cron$" |
+    cut -f 2-3 -d ' ' |
+    sort |
+    uniq -c
+echo
+echo "Hosts running freebsd-update fetch:"
+sort -u /root/freebsd-update-latest-extract.log |
+    grep -E " fetch$" |
+    cut -f 2-3 -d ' ' |
+    sort |
+    uniq -c
+echo
+echo "AWS hosts running freebsd-update cron:"
+sort -u /root/freebsd-update-latest-extract-aws.log |
+    grep -E " cron$" |
+    cut -f 2-3 -d ' ' |
+    sort |
+    uniq -c
+echo
+echo "AWS hosts running freebsd-update fetch:"
+sort -u /root/freebsd-update-latest-extract-aws.log |
+    grep -E " fetch$" |
+    cut -f 2-3 -d ' ' |
+    sort |
+    uniq -c
+echo
+
 # Gather portsnap statistics
 grep '"portsnap (' /var/log/nginx/access.log.0 > /root/portsnap-access.log
 cp /local0/ps-mirror/www/indextimes /root/indextimes

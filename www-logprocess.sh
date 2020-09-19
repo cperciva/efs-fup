@@ -21,8 +21,8 @@ cut -f 1 -d ' ' /var/log/nginx/access.log.0 |
     wc -l
 
 # Gather FreeBSD Update statistics
-grep '"freebsd-update (' /var/log/nginx/access.log.0 > /root/freebsd-update-access.log
-grep latest.ssl /root/freebsd-update-access.log > /root/freebsd-update-latest.log
+grep '"freebsd-update (' /var/log/nginx/access.log.0 > /root/freebsd-update-access.log || true
+grep latest.ssl /root/freebsd-update-access.log > /root/freebsd-update-latest.log || true
 cat /root/freebsd-update-latest.log |
     cut -f 1,7,13 -d ' ' |
     tr '/(,' ' ' |

@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if ! [ -f /var/log/nginx/access.log.0 ]; then
+	exit 0
+fi
+
 echo "Paths:"
 cat /var/log/nginx/access.log.0 |
     cut -f 7 -d ' ' |
@@ -45,6 +49,7 @@ perl -e '
 	}' < /root/freebsd-update-latest-extract.log > /root/freebsd-update-latest-extract-aws.log
 
 # Print FreeBSD Update statistics
+echo
 echo "Hosts running freebsd-update cron:"
 sort -u /root/freebsd-update-latest-extract.log |
     grep -E " cron$" |
@@ -72,7 +77,6 @@ sort -u /root/freebsd-update-latest-extract-aws.log |
     cut -f 2-3 -d ' ' |
     sort |
     uniq -c
-echo
 
 # Gather portsnap statistics
 grep '"portsnap (' /var/log/nginx/access.log.0 > /root/portsnap-access.log

@@ -124,7 +124,7 @@ while read ID FHASH FDECHASH; do
 	# Fetch the decryption key
 	if ! [ -r "${PRIVDIR}/key-${ID}" ]; then
 		fetch -o "${PRIVDIR}/key-${ID}" "${MASTER}/key-${ID}"	\
-		    2>/dev/null
+		    2>/dev/null || true
 		if ! [ -r "${PRIVDIR}/key-${ID}" ]; then
 			continue
 		fi

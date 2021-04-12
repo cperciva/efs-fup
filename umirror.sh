@@ -102,19 +102,19 @@ while read ID FHASH FDECHASH; do
 	fi
 
 	# Fetch the (encrypted) file
-	if ! [ -r "${PRIVDIR}/tar-${ID}" ] ||
-	   ! [ `sha256 -q "${PRIVDIR}/tar-${ID}"` = "${FHASH}" ]; then
-		rm -f "${PRIVDIR}/tar-${ID}"
-		fetch -o "${PRIVDIR}/tar-${ID}" "${MASTER}/tar-${ID}"	\
+	if ! [ -r "${PRIVDIR}/tar-${ID}" ]; then
+		rm -f "${PRIVDIR}/tar-${ID}.tmp"
+		fetch -o "${PRIVDIR}/tar-${ID}.tmp" "${MASTER}/tar-${ID}"	\
 		    2>/dev/null
-		if ! [ -r "${PRIVDIR}/tar-${ID}" ]; then
+		if ! [ -r "${PRIVDIR}/tar-${ID}.tmp" ]; then
 			echo "Failed to fetch tar-${ID}"
 			exit 1
 		fi
-		if ! [ `sha256 -q "${PRIVDIR}/tar-${ID}"` = "${FHASH}" ]; then
+		if ! [ `sha256 -q "${PRIVDIR}/tar-${ID}.tmp"` = "${FHASH}" ]; then
 			echo "Hash of tar-${ID} is incorrect"
 			exit 1
 		fi
+		mv "${PRIVDIR}/tar-${ID}.tmp" "${PRIVDIR}/tar-${ID}" 
 		echo "Fetched tar-${ID}"
 	fi
 

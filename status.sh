@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Get current status
-CSTATUS=`sysrc -n nginx_enable`
+CSTATUS=`sysrc -n varnishd_enable`
 
 # New status is "YES", unless...
 NSTATUS=YES
@@ -19,13 +19,13 @@ fi
 # Do we need to turn things off?
 if [ "${NSTATUS}${CSTATUS}" = "NOYES" ]; then
 	echo "Mirror is unhealthy"
-	/usr/local/etc/rc.d/nginx stop
-	sysrc nginx_enable=$NSTATUS
+	/usr/local/etc/rc.d/varnishd stop
+	sysrc varnishd_enable=$NSTATUS
 fi
 
 # Do we need to turn things on?
 if [ "${NSTATUS}${CSTATUS}" = "YESNO" ]; then
 	echo "Mirror is healthy"
-	sysrc nginx_enable=$NSTATUS
-	/usr/local/etc/rc.d/nginx start
+	sysrc varnishd_enable=$NSTATUS
+	/usr/local/etc/rc.d/varnishd start
 fi

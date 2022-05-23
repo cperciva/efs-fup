@@ -184,3 +184,6 @@ while read DIR; do
 		rm -r "${PUBDIR}/${DIR}"
 	fi
 done < "${EXCLUDES}"
+
+# Generate list of directories present on the mirror
+ls ${PUBDIR}/*-* > ${PUBDIR}/releases

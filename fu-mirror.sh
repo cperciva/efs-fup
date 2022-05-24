@@ -186,4 +186,4 @@ while read DIR; do
 done < "${EXCLUDES}"
 
 # Generate list of directories present on the mirror
-ls ${PUBDIR}/*-* > ${PUBDIR}/releases
+ls -d ${PUBDIR}/*-*/* | tr -s / | sed "s|${PUBDIR}||" > ${PUBDIR}/releases

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+LANG=C
 cd /local0/ps-mirror/wrkdir
 
 STIME=`date "+%s"`
